@@ -1,0 +1,24 @@
+# SAC
+
+Simple Apache Configurator (Short SAC, I know it sounds stupid) is a tool for full stack developers to add virtual hosts on the fly, change their PHP version for individual virtual hosts and to manage their web services.
+
+## Installation
+
+There isn't a acctual release canditate yet so you have to clone the repo and compile it yourself.
+
+## Usage
+
+1. Start it
+2. Profit
+
+## Contributing
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
+
+## License
+
+MIT License
