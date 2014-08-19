@@ -4,7 +4,7 @@ Simple Apache Configurator (Short SAC, I know it sounds stupid) is a tool for fu
 
 ## Installation
 
-There isn't a acctual release canditate yet so you have to clone the repo and compile it yourself.
+There isn't a actual release candidate yet so you have to clone the repo and compile it yourself.
 
 ## Usage
 
