@@ -10,7 +10,7 @@
 <?import javafx.scene.control.Label?>
 
 
-<GridPane alignment="center" hgap="10" prefHeight="477.0" prefWidth="536.0" vgap="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="sample.Controller">
+<GridPane alignment="center" hgap="10" prefHeight="477.0" prefWidth="536.0" vgap="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="sac.Controller">
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints />

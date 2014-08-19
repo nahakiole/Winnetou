@@ -1,8 +1,8 @@
-package sample;
+package sac;
 
 
 
 public class Settings {
-    
+
 
 }
