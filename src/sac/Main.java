@@ -9,6 +9,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import javafx.scene.image.Image;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,13 +20,16 @@ public class Main extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
+
+        primaryStage.getIcons().add(new Image("file:image/tray.png"));
+
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("SAC");
         primaryStage.setScene(new Scene(root, 500, 400));
 
-        if (SystemTray.isSupported()) {
 
+        if (SystemTray.isSupported()) {
             setTrayIcon(primaryStage);
             Platform.setImplicitExit(false);
         }
@@ -34,7 +40,7 @@ public class Main extends Application {
 
     private void setTrayIcon(final Stage primaryStage) {
         SystemTray sTray = SystemTray.getSystemTray();
-        Image image = Toolkit.getDefaultToolkit().getImage("image/tray.png");
+        java.awt.Image image = Toolkit.getDefaultToolkit().getImage("image/tray.png");
 
         ActionListener listenerShow = new ActionListener() {
 
@@ -67,8 +73,8 @@ public class Main extends Application {
         });
 
         PopupMenu popup = new PopupMenu();
-        MenuItem showItem = new MenuItem("Öffnen");
-        MenuItem exitItem = new MenuItem("Beenden");
+        MenuItem showItem = new MenuItem("Open Control Panel");
+        MenuItem exitItem = new MenuItem("Shut down");
 
 
         showItem.addActionListener(listenerShow);
@@ -78,18 +84,18 @@ public class Main extends Application {
         popup.addSeparator();
         popup.add(exitItem);
 
-        TrayIcon icon = new TrayIcon(image, "System Tray Beispiel", popup);
+        TrayIcon icon = new TrayIcon(image, "SAC", popup);
 
         try {
             sTray.add(icon);
-        }
-        catch (AWTException e) {
+        } catch (AWTException e) {
             System.err.println(e);
         }
     }
 
 
     public static void main(String[] args) {
+        com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon("image/tray.png").getImage());
         launch(args);
     }
 }
