@@ -89,7 +89,7 @@ public class Main extends Application {
         try {
             sTray.add(icon);
         } catch (AWTException e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
     }
 
