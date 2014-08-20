@@ -12,9 +12,11 @@ import javafx.stage.WindowEvent;
 import javafx.scene.image.Image;
 
 import javax.swing.*;
+import javax.xml.soap.Node;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class Main extends Application {
 
@@ -28,6 +30,7 @@ public class Main extends Application {
         primaryStage.setTitle("SAC");
         primaryStage.setScene(new Scene(root, 500, 400));
 
+        primaryStage.getScene();
 
         if (SystemTray.isSupported()) {
             setTrayIcon(primaryStage);

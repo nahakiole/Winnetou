@@ -10,7 +10,7 @@
    <children>
       <Pane GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
          <children>
-            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Add" />
+            <Button id="settings" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Settings"  onAction="#doSomething"/>
             <Button alignment="CENTER" layoutX="117.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Do Stuff" />
             <TableView layoutX="1.0" layoutY="41.0" prefHeight="200.0" prefWidth="446.0">
               <columns>
