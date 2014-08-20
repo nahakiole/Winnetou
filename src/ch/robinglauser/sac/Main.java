@@ -1,4 +1,4 @@
-package sac;
+package ch.robinglauser.sac;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,7 +24,7 @@ public class Main extends Application {
 
         primaryStage.getIcons().add(new Image("file:image/tray.png"));
 
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("controlPanel.fxml"));
         primaryStage.setTitle("SAC");
         primaryStage.setScene(new Scene(root, 500, 400));
 
