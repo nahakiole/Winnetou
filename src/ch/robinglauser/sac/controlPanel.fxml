@@ -5,23 +5,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane alignment="center" hgap="10" prefHeight="477.0" prefWidth="536.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.robinglauser.sac.PanelController">
+<GridPane alignment="center" hgap="10" prefHeight="260.0" prefWidth="320.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.robinglauser.sac.PanelController">
 
    <children>
-      <Pane GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
+      <Pane prefHeight="105.0" prefWidth="304.0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
          <children>
-            <Button id="settings" alignment="CENTER" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Settings"  onAction="#doSomething"/>
-            <Button alignment="CENTER" layoutX="117.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Do Stuff" />
-            <TableView layoutX="1.0" layoutY="41.0" prefHeight="200.0" prefWidth="446.0">
+            <Button id="settings" alignment="CENTER" layoutX="219.0" layoutY="16.0" mnemonicParsing="false" onAction="#openSettings" text="Settings" />
+            <ToggleButton layoutX="162.0" layoutY="16.0" mnemonicParsing="false" text="Start" />
+            <Label layoutX="16.0" layoutY="21.0" text="Apache" />
+            <Label layoutX="17.0" layoutY="63.0" text="MySQL" />
+            <ToggleButton layoutX="163.0" layoutY="58.0" mnemonicParsing="false" text="Start" />
+            <Label layoutX="74.0" layoutY="21.0" text="Running" textFill="#04ff00" />
+            <Label layoutX="74.0" layoutY="63.0" text="Not Running" textFill="RED" />
+            <TableView layoutX="16.0" layoutY="97.0" prefHeight="127.0" prefWidth="273.0" fx:id="tableView">
               <columns>
-                <TableColumn prefWidth="75.0" text="C1" />
-                <TableColumn prefWidth="75.0" text="C2" />
+                <TableColumn prefWidth="75.0" text="Host Name" fx:id="hostName"/>
+                <TableColumn prefWidth="75.0" text="Location" fx:id="fileName"/>
               </columns>
             </TableView>
-            <Button alignment="CENTER" layoutX="235.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Do Stuff" />
          </children>
          <GridPane.margin>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </GridPane.margin>
       </Pane>
    </children>

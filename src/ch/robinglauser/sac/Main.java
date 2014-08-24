@@ -28,7 +28,7 @@ public class Main extends Application {
 
         Parent root = FXMLLoader.load(getClass().getResource("controlPanel.fxml"));
         primaryStage.setTitle("SAC");
-        primaryStage.setScene(new Scene(root, 500, 400));
+        primaryStage.setScene(new Scene(root, 320, 260));
 
         primaryStage.getScene();
 
