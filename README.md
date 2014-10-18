@@ -1,6 +1,6 @@
-# SAC
+# Winnetou
 
-Simple Apache Configurator (Short SAC, I know it sounds stupid) is a tool for full stack developers to add virtual hosts on the fly, change their PHP version for individual virtual hosts and to manage their web services.
+Winnetou is a tool for full stack developers to add virtual hosts on the fly, change their PHP version for individual virtual hosts and to manage their web services.
 
 ## Installation
 
