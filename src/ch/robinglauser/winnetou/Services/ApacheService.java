@@ -2,18 +2,21 @@ package ch.robinglauser.winnetou.Services;
 
 
 public class ApacheService implements Service {
+    private boolean isRunning;
     @Override
     public boolean isRunning() {
-        return false;
+        return isRunning;
     }
 
     @Override
     public boolean start() {
-        return false;
+        isRunning = !isRunning;
+        return true;
     }
 
     @Override
     public boolean stop() {
+        isRunning = !isRunning;
         return false;
     }
 
