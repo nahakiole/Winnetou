@@ -35,8 +35,7 @@ public class HostFile {
         return hostEntries;
     }
 
-    public void addHostEntry(String hostName, String IPadress) {
-        hostEntries.add(new HostEntry(hostName, IPadress));
-        System.out.println(hostEntries);
+    public void addHostEntry(HostEntry hostEntry) {
+        hostEntries.add(hostEntry);
     }
 }

@@ -1,19 +1,19 @@
 package ch.robinglauser.winnetou;
 
 import ch.robinglauser.winnetou.Services.ApacheService;
+import ch.robinglauser.winnetou.Services.FileZillaService;
 import ch.robinglauser.winnetou.Services.MySQLService;
 import ch.robinglauser.winnetou.Services.Service;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.*;
 
 
 public class ControlCenter extends JFrame implements ActionListener {
@@ -22,110 +22,50 @@ public class ControlCenter extends JFrame implements ActionListener {
 
     ArrayList<JLabel> labels = new ArrayList<JLabel>();
     ArrayList<JButton> buttons = new ArrayList<JButton>();
+    ResourceBundle bundle;
+    Connection connection;
+    Settings settings;
+    HostFile hostFile;
+    JTable table;
 
     public ControlCenter() {
-        try {
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (UnsupportedLookAndFeelException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            System.out.println("Fail");
-        }
-        setFont(new Font("Arial",10,10));
-        setTitle("Winnetou");
-        JPanel startPanel = new JPanel(new GridLayout(2, 3, 5, 5));
-        startPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        services.add(new ApacheService());
-        services.add(new MySQLService());
-
-        Iterator<Service> it = services.iterator();
+        openConnection();
+        setLookAndFeel();
 
 
+        JPanel servicePanel = getServicePanel();
 
-        JLabel jLabel;
-        JButton jButton;
-        while (it.hasNext()) {
-            Service service = it.next();
-            System.out.println(service.getName());
-            jLabel = new JLabel(service.getName());
-            jButton = new JButton(service.getName());
-            labels.add(jLabel);
-            buttons.add(jButton);
-            JLabel lblLed = new JLabel("•");
-            lblLed.setForeground(Color.GREEN);
-            lblLed.setFont(new Font(null, Font.PLAIN, 30));
-            startPanel.add(lblLed);
-            jButton.addActionListener(e -> {
-                if (service.isRunning()){
-                    service.stop();
-                    lblLed.setForeground(Color.RED);
-                }
-                else {
-                    service.start();
-                    lblLed.setForeground(Color.GREEN);
-                }
-            });
-            startPanel.add(jLabel);
-            startPanel.add(jButton);
-        }
-
-
-        HostFile hostFile = new HostFile(new File("C:\\Users\\Robin\\IdeaProjects\\Winnetou\\resources\\test"));
+        hostFile = new HostFile(new File("C:\\Windows\\System32\\drivers\\etc\\hosts"));
 
         ArrayList entityList = hostFile.getData();
-        JTable table = new JTable();
+
+
+        servicePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        add(servicePanel, BorderLayout.NORTH);
+        servicePanel.setLayout(new GridLayout(0, 1, 0, 0));
+
+        JPanel actionPanel = new JPanel();
+        actionPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        add(actionPanel, BorderLayout.SOUTH);
+        actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.X_AXIS));
+
+        JButton btnNewButton_1 = new JButton("New button");
+        actionPanel.add(btnNewButton_1);
+
+        JButton btnNewButton = new JButton("New button");
+        btnNewButton.setHorizontalAlignment(SwingConstants.LEFT);
+        actionPanel.add(btnNewButton);
+
+
+
+
+        table = new JTable();
+
+
         TableModel model = new TableModel(entityList);
-        JScrollPane scrollPane = new JScrollPane(table);
+
+
         table.setModel(model);
-        JPanel mainPanel = new JPanel(new GridLayout(3, 1, 0, 0));
-        Panel buttonPanel = new Panel();
-
-        JButton button = new JButton("Add Virtual Host");
-        button.addActionListener(e -> {
-            JTextField hostName = new JTextField();
-            hostName.addAncestorListener( new AncestorListener()
-            {
-                @Override
-                public void ancestorRemoved( final AncestorEvent event ) {}
-                @Override
-                public void ancestorMoved( final AncestorEvent event ) {}
-                @Override
-                public void ancestorAdded( final AncestorEvent event )
-                {
-                    hostName.requestFocusInWindow();
-                }
-            });
-
-            hostName.addFocusListener(new FocusListener()
-            {
-                @Override
-                public void focusGained( final FocusEvent e ) {}
-                @Override
-                public void focusLost( final FocusEvent e )
-                {
-                    if( isFirstTime )
-                    {
-                        // When we lose focus, ask for it back but only once
-                        hostName.requestFocusInWindow();
-                        isFirstTime = false;
-                    }
-                }
-                private boolean isFirstTime = true;
-            } );
-            JTextField ipadress = new JTextField("127.0.0.1");
-            final JComponent[] inputs = new JComponent[] {
-                    new JLabel("HostName"),
-                    hostName,
-                    new JLabel("IP-Adress"),
-                    ipadress,
-            };
-
-            JOptionPane.showMessageDialog(null, inputs, "Add new host", JOptionPane.PLAIN_MESSAGE, null);
-
-            hostFile.addHostEntry(hostName.getText(), ipadress.getText());
-            model.fireTableDataChanged();
-        });
 
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -133,73 +73,133 @@ public class ControlCenter extends JFrame implements ActionListener {
                     JTable target = (JTable) e.getSource();
                     int row = target.getSelectedRow();
                     HostEntry hostEntry = (HostEntry) model.wordsList.get(row);
-                    JTextField hostName = new JTextField(hostEntry.getHostname());
-                    hostName.addAncestorListener( new AncestorListener()
-                    {
-                        @Override
-                        public void ancestorRemoved( final AncestorEvent event ) {}
-                        @Override
-                        public void ancestorMoved( final AncestorEvent event ) {}
-                        @Override
-                        public void ancestorAdded( final AncestorEvent event )
-                        {
-                            hostName.requestFocusInWindow();
-                        }
-                    });
-
-                    hostName.addFocusListener(new FocusListener()
-                    {
-                        @Override
-                        public void focusGained( final FocusEvent e ) {}
-                        @Override
-                        public void focusLost( final FocusEvent e )
-                        {
-                            if( isFirstTime )
-                            {
-                                hostName.requestFocusInWindow();
-                                isFirstTime = false;
-                            }
-                        }
-                        private boolean isFirstTime = true;
-                    } );
-                    JTextField ipadress = new JTextField(hostEntry.getIpAddress());
-                    final JComponent[] inputs = new JComponent[] {
-                            new JLabel("HostName"),
-                            hostName,
-                            new JLabel("IP-Adress"),
-                            ipadress,
-                    };
-
-                    JOptionPane.showMessageDialog(null, inputs, "Add new host", JOptionPane.PLAIN_MESSAGE, null);
-                    hostEntry.setHostname(hostName.getText());
-                    hostEntry.setIpAddress(ipadress.getText());
+                    HostEntryEditor.edit(hostEntry);
                     model.fireTableDataChanged();
-
                 }
             }
         });
 
+        JButton button = new JButton(bundle.getString("add_new_host"));
+        button.addActionListener(e -> {
+            HostEntry hostEntry = new HostEntry("","127.0.0.1");
+            HostEntryEditor.edit(hostEntry);
+            hostFile.addHostEntry(hostEntry);
+            model.fireTableDataChanged();
+        });
 
-        TableColumn column = table.getColumnModel().getColumn(0);
-        column.setMaxWidth(90);
+        table.setDragEnabled(false);
 
-
+        Panel buttonPanel = new Panel();
         buttonPanel.add(button);
 
-        mainPanel.add(startPanel);
-        mainPanel.add(scrollPane);
-        mainPanel.add(buttonPanel);
 
+        JPanel mainPanel = new JPanel();
+        mainPanel.add(servicePanel);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        table.getParent().addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(final ComponentEvent e) {
+                if (table.getPreferredSize().width < table.getParent().getWidth()) {
+                    table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+                } else {
+                    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                }
+            }
+        });
+        scrollPane.setMaximumSize(new Dimension(10,10));
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel);
 
         add(mainPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        pack();
-        setSize(300, 300);
-        setResizable(false);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
         setVisible(true);
 
+    }
+
+    private JPanel getServicePanel() {
+        services.add(new ApacheService());
+        services.add(new MySQLService());
+        services.add(new FileZillaService());
+
+        JPanel startPanel = new JPanel();
+        Iterator<Service> it = services.iterator();
+
+        JPanel ApacheService = new JPanel();
+
+
+        while (it.hasNext()) {
+            Service service = it.next();
+            System.out.println(service.getName());
+            JLabel jLabel = new JLabel(service.getName());
+            jLabel.setHorizontalAlignment(SwingConstants.LEFT);
+
+            JButton jButton = new JButton("Start");
+            labels.add(jLabel);
+            buttons.add(jButton);
+            JLabel lblLed = new JLabel("●");
+            lblLed.setForeground(Color.RED);
+            lblLed.setHorizontalAlignment(SwingConstants.RIGHT);
+
+            lblLed.setFont(new Font(null, Font.PLAIN, 18));
+
+            jButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (service.isRunning()) {
+                        lblLed.setForeground(Color.YELLOW);
+                        service.stop();
+                        lblLed.setForeground(Color.RED);
+                        jButton.setText("Start");
+                    } else {
+                        lblLed.setForeground(Color.YELLOW);
+                        service.start();
+                        lblLed.setForeground(Color.GREEN);
+                        jButton.setText("Stop");
+                    }
+                }
+            });
+
+            JPanel servicePanel = new JPanel();
+
+            servicePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+            servicePanel.add(lblLed);
+
+            servicePanel.add(jButton);
+            servicePanel.add(jLabel);
+            startPanel.add(servicePanel);
+        }
+        return startPanel;
+    }
+
+    private void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (UnsupportedLookAndFeelException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            System.out.println("Fail");
+        }
+        setFont(new Font("Arial", Font.PLAIN, 10));
+        setTitle("Winnetou");
+    }
+
+    private void openConnection() {
+        connection = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:apache.db");
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        settings = new Settings(connection);
+        String[] language = settings.get("language").split("_");
+        Locale locale = new Locale(language[0], language[1]);
+
+        bundle = ResourceBundle.getBundle("Winnetou", locale);
     }
 
     public static void main(String[] args) {
